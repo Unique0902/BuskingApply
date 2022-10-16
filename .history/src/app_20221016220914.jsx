@@ -1,10 +1,9 @@
 import styles from './app.module.css';
 import { useState, useEffect, useRef } from 'react';
 import React from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import SearchResult from './components/searchResult/searchResult';
 import Page_num_screen from './components/page_num_screen/page_num_screen';
-import QueryString from 'qs';
 
 const App = ({
   buskingRepository,
@@ -26,11 +25,8 @@ const App = ({
   const [appliance, setAppliance] = useState([]);
   const [applianceLength, setApplianceLength] = useState(0);
   const [ip, setIp] = useState('');
-  const location = useLocation();
-  const queryData = QueryString.parse(location.search, {
-    ignoreQueryPrefix: true,
-  });
-  const userId = queryData.uid;
+  let { userId } = useParams();
+  console.log(userId);
   const searchRef = useRef();
   const selectRef = useRef();
   const search = () => {

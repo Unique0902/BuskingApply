@@ -27,10 +27,12 @@ const App = ({
   const [applianceLength, setApplianceLength] = useState(0);
   const [ip, setIp] = useState('');
   const location = useLocation();
+  let { userId } = useParams();
   const queryData = QueryString.parse(location.search, {
     ignoreQueryPrefix: true,
   });
-  const userId = queryData.uid;
+  console.log(queryData);
+  console.log(userId);
   const searchRef = useRef();
   const selectRef = useRef();
   const search = () => {

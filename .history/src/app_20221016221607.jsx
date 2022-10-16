@@ -31,6 +31,7 @@ const App = ({
     ignoreQueryPrefix: true,
   });
   const userId = queryData.uid;
+  console.log(queryData);
   const searchRef = useRef();
   const selectRef = useRef();
   const search = () => {

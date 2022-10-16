@@ -29,7 +29,7 @@ root.render(
               ipService={ipService}
             />
           }
-        />
+        ></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

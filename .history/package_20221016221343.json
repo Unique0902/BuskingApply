@@ -2,13 +2,11 @@
   "name": "template",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://unique0902.github.io/BuskingApply",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
     "firebase": "^9.12.1",
-    "gh-pages": "^4.0.0",
     "qs": "^6.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
