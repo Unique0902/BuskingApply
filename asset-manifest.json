@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/BuskingApply/static/css/main.9dbf5fb2.css",
+    "main.js": "/BuskingApply/static/js/main.5a5b15ae.js",
+    "index.html": "/BuskingApply/index.html",
+    "main.9dbf5fb2.css.map": "/BuskingApply/static/css/main.9dbf5fb2.css.map",
+    "main.5a5b15ae.js.map": "/BuskingApply/static/js/main.5a5b15ae.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9dbf5fb2.css",
+    "static/js/main.5a5b15ae.js"
+  ]
+}
