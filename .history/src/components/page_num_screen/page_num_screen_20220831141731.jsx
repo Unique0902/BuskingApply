@@ -8,7 +8,7 @@ const Page_num_screen = ({ resultNum, pageNum, onPagePlus, onPageMinus }) => {
         {'<'}
       </button>
       <p>{pageNum}/</p>
-      <p>{parseInt((resultNum - 1) / 6) + 1}</p>
+      <p>{parseInt(resultNum / 6) + 1}</p>
       <button className={styles.btn} onClick={() => onPagePlus()}>
         {'>'}
       </button>
