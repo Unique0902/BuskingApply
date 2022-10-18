@@ -28,7 +28,6 @@ const App = ({
   const [applianceLength, setApplianceLength] = useState(0);
   const [playlists, setPlaylists] = useState(null);
   const [playlistsArr, setPlaylistsArr] = useState([]);
-  const [nowPlaylist, setNowPlaylist] = useState(null);
   const [ip, setIp] = useState('');
   const location = useLocation();
   const queryData = QueryString.parse(location.search, {
@@ -37,12 +36,6 @@ const App = ({
   const userId = queryData.uid;
   const searchRef = useRef();
   const selectRef = useRef();
-  const valueRef = useRef();
-  const changeNowPlaylist = () => {
-    setNowPlaylist(
-      playlistsArr.find((list) => list.name === valueRef.current.value)
-    );
-  };
   const search = () => {
     if (searchRef.current.value) {
       if (selectRef.current.value === '제목') {
@@ -96,20 +89,6 @@ const App = ({
       });
     }
   }, [isUser]);
-  useEffect(() => {
-    if (isUser) {
-      if (playlistsArr.length > 0) {
-        setNowPlaylist(playlistsArr[0]);
-      }
-    }
-  }, [playlistsArr, isUser]);
-  useEffect(() => {
-    if (isUser) {
-      if (nowPlaylist) {
-        nowPlaylist.songs && setResults(Object.values(nowPlaylist.songs));
-      }
-    }
-  }, [isUser, nowPlaylist]);
   useEffect(() => {
     ipService.getIp().then((ip1) => setIp(ip1));
   }, []);
@@ -526,27 +505,6 @@ const App = ({
               <h2>해당 유저의 현재 진행중인 버스킹이 없습니다.</h2>
               <section>
                 <p>{playlistData && playlistData.name}</p>
-                {playlistsArr.length != 0 ? (
-                  <select
-                    ref={valueRef}
-                    className={styles.playlists}
-                    onChange={() => {
-                      changeNowPlaylist();
-                    }}
-                  >
-                    {playlistsArr.map((playlist) => {
-                      return (
-                        <option data-id={playlist.id} key={playlist.id}>
-                          {playlist.name && playlist.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                ) : (
-                  <div>
-                    <p>No Playlist..</p>
-                  </div>
-                )}
                 <section className={styles.searchBar}>
                   <select
                     ref={selectRef}
@@ -586,8 +544,75 @@ const App = ({
                             key={results.indexOf(result)}
                             index={results.indexOf(result) + 1}
                             result={result}
-                            btnText={'신청가능'}
-                            onSongClick={() => {}}
+                            btnText='신청'
+                            onSongClick={(sid) => {
+                              if (buskingData.appliance) {
+                                const applyArr = Object.values(
+                                  buskingData.appliance
+                                );
+                                const song = applyArr.find(
+                                  (song) => song.sid == sid
+                                );
+                                if (song) {
+                                  // console.log(1);
+                                  const userIp = song.applicants.find(
+                                    (ap) => ap.ip == ip
+                                  );
+                                  if (!userIp) {
+                                    //   console.log(userIp);
+                                    buskingRepository.applyOldBuskingSong(
+                                      userId,
+                                      sid,
+                                      ip,
+                                      song.cnt,
+                                      song.applicants,
+                                      () => {}
+                                    );
+                                  } else {
+                                    //   console.log(userIp);
+                                    window.alert('이미 투표하셨습니다!');
+                                  }
+                                } else {
+                                  if (
+                                    appliance.length ==
+                                    parseInt(buskingData.maxNum)
+                                  ) {
+                                    alert(
+                                      '신청 최대수에 도달했습니다! 한 곡이 끝난후 신청해보세요!'
+                                    );
+                                    return;
+                                  }
+                                  // console.log(2);
+                                  buskingRepository.applyNewBuskingSong(
+                                    userId,
+                                    result.title,
+                                    result.artist,
+                                    sid,
+                                    ip,
+                                    () => {}
+                                  );
+                                }
+                              } else {
+                                if (
+                                  appliance.length ==
+                                  parseInt(buskingData.maxNum)
+                                ) {
+                                  alert(
+                                    '신청 최대수에 도달했습니다! 한 곡이 끝난후 신청해보세요!'
+                                  );
+                                  return;
+                                }
+                                //   console.log(3);
+                                buskingRepository.applyNewBuskingSong(
+                                  userId,
+                                  result.title,
+                                  result.artist,
+                                  sid,
+                                  ip,
+                                  () => {}
+                                );
+                              }
+                            }}
                           />
                         ))}
                   </ul>

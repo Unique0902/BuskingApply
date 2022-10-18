@@ -586,8 +586,75 @@ const App = ({
                             key={results.indexOf(result)}
                             index={results.indexOf(result) + 1}
                             result={result}
-                            btnText={'신청가능'}
-                            onSongClick={() => {}}
+                            btnText='신d청'
+                            onSongClick={(sid) => {
+                              if (buskingData.appliance) {
+                                const applyArr = Object.values(
+                                  buskingData.appliance
+                                );
+                                const song = applyArr.find(
+                                  (song) => song.sid == sid
+                                );
+                                if (song) {
+                                  // console.log(1);
+                                  const userIp = song.applicants.find(
+                                    (ap) => ap.ip == ip
+                                  );
+                                  if (!userIp) {
+                                    //   console.log(userIp);
+                                    buskingRepository.applyOldBuskingSong(
+                                      userId,
+                                      sid,
+                                      ip,
+                                      song.cnt,
+                                      song.applicants,
+                                      () => {}
+                                    );
+                                  } else {
+                                    //   console.log(userIp);
+                                    window.alert('이미 투표하셨습니다!');
+                                  }
+                                } else {
+                                  if (
+                                    appliance.length ==
+                                    parseInt(buskingData.maxNum)
+                                  ) {
+                                    alert(
+                                      '신청 최대수에 도달했습니다! 한 곡이 끝난후 신청해보세요!'
+                                    );
+                                    return;
+                                  }
+                                  // console.log(2);
+                                  buskingRepository.applyNewBuskingSong(
+                                    userId,
+                                    result.title,
+                                    result.artist,
+                                    sid,
+                                    ip,
+                                    () => {}
+                                  );
+                                }
+                              } else {
+                                if (
+                                  appliance.length ==
+                                  parseInt(buskingData.maxNum)
+                                ) {
+                                  alert(
+                                    '신청 최대수에 도달했습니다! 한 곡이 끝난후 신청해보세요!'
+                                  );
+                                  return;
+                                }
+                                //   console.log(3);
+                                buskingRepository.applyNewBuskingSong(
+                                  userId,
+                                  result.title,
+                                  result.artist,
+                                  sid,
+                                  ip,
+                                  () => {}
+                                );
+                              }
+                            }}
                           />
                         ))}
                   </ul>

@@ -586,7 +586,6 @@ const App = ({
                             key={results.indexOf(result)}
                             index={results.indexOf(result) + 1}
                             result={result}
-                            btnText={'신청가능'}
                             onSongClick={() => {}}
                           />
                         ))}

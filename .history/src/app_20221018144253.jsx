@@ -26,9 +26,6 @@ const App = ({
   const [pageNum2, setPageNum2] = useState(1);
   const [appliance, setAppliance] = useState([]);
   const [applianceLength, setApplianceLength] = useState(0);
-  const [playlists, setPlaylists] = useState(null);
-  const [playlistsArr, setPlaylistsArr] = useState([]);
-  const [nowPlaylist, setNowPlaylist] = useState(null);
   const [ip, setIp] = useState('');
   const location = useLocation();
   const queryData = QueryString.parse(location.search, {
@@ -37,12 +34,6 @@ const App = ({
   const userId = queryData.uid;
   const searchRef = useRef();
   const selectRef = useRef();
-  const valueRef = useRef();
-  const changeNowPlaylist = () => {
-    setNowPlaylist(
-      playlistsArr.find((list) => list.name === valueRef.current.value)
-    );
-  };
   const search = () => {
     if (searchRef.current.value) {
       if (selectRef.current.value === '제목') {
@@ -88,28 +79,6 @@ const App = ({
       setNowPageResults2(results.slice((pageNum2 - 1) * 6, pageNum2 * 6));
     }
   };
-  useEffect(() => {
-    if (isUser) {
-      playlistRepository.syncPlaylist(userId, (data) => {
-        setPlaylists(data);
-        setPlaylistsArr(Object.values(data));
-      });
-    }
-  }, [isUser]);
-  useEffect(() => {
-    if (isUser) {
-      if (playlistsArr.length > 0) {
-        setNowPlaylist(playlistsArr[0]);
-      }
-    }
-  }, [playlistsArr, isUser]);
-  useEffect(() => {
-    if (isUser) {
-      if (nowPlaylist) {
-        nowPlaylist.songs && setResults(Object.values(nowPlaylist.songs));
-      }
-    }
-  }, [isUser, nowPlaylist]);
   useEffect(() => {
     ipService.getIp().then((ip1) => setIp(ip1));
   }, []);
@@ -522,116 +491,7 @@ const App = ({
               </section>
             </section>
           ) : (
-            <section>
-              <h2>해당 유저의 현재 진행중인 버스킹이 없습니다.</h2>
-              <section>
-                <p>{playlistData && playlistData.name}</p>
-                {playlistsArr.length != 0 ? (
-                  <select
-                    ref={valueRef}
-                    className={styles.playlists}
-                    onChange={() => {
-                      changeNowPlaylist();
-                    }}
-                  >
-                    {playlistsArr.map((playlist) => {
-                      return (
-                        <option data-id={playlist.id} key={playlist.id}>
-                          {playlist.name && playlist.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                ) : (
-                  <div>
-                    <p>No Playlist..</p>
-                  </div>
-                )}
-                <section className={styles.searchBar}>
-                  <select
-                    ref={selectRef}
-                    onChange={() => {
-                      setPageNum(1);
-                      search();
-                    }}
-                  >
-                    <option value='제목'>제목</option>
-                    <option value='가수'>가수</option>
-                  </select>
-                  <input
-                    type='search'
-                    placeholder='search..'
-                    ref={searchRef}
-                    onChange={() => {
-                      setPageNum(1);
-                      search();
-                    }}
-                  />
-                </section>
-                <section className={styles.results}>
-                  <h2>해당 유저의 플레이 리스트</h2>
-                  <h3>플레이리스트의 곡 수 {results.length}</h3>
-                  <ul>
-                    <li className={styles.description}>
-                      <div className={styles.index}>index</div>
-                      <div className={styles.name}>이름</div>
-                      <div className={styles.artist}>아티스트</div>
-                      <div className={styles.btn}></div>
-                    </li>
-                    {results &&
-                      results
-                        .slice((pageNum - 1) * 6, pageNum * 6)
-                        .map((result) => (
-                          <SearchResult
-                            key={results.indexOf(result)}
-                            index={results.indexOf(result) + 1}
-                            result={result}
-                            btnText={'신청가능'}
-                            onSongClick={() => {}}
-                          />
-                        ))}
-                  </ul>
-                  <Page_num_screen
-                    resultNum={resultNum}
-                    pageNum={pageNum}
-                    onPagePlus={plusPage}
-                    onPageMinus={minusPage}
-                  />
-                  <button
-                    className={styles.btn}
-                    onClick={() => {
-                      results.sort(function (a, b) {
-                        if (a.title.toLowerCase() > b.title.toLowerCase())
-                          return 1;
-                        else if (a.title.toLowerCase() < b.title.toLowerCase())
-                          return -1;
-                        else return 0;
-                      });
-                      setResults([...results]);
-                    }}
-                  >
-                    제목 문자순 정렬
-                  </button>
-                  <button
-                    className={styles.btn}
-                    onClick={() => {
-                      results.sort(function (a, b) {
-                        if (a.artist.toLowerCase() > b.artist.toLowerCase())
-                          return 1;
-                        else if (
-                          a.artist.toLowerCase() < b.artist.toLowerCase()
-                        )
-                          return -1;
-                        else return 0;
-                      });
-                      setResults([...results]);
-                    }}
-                  >
-                    가수 문자순 정렬
-                  </button>
-                </section>
-              </section>
-            </section>
+            <h2>해당 유저의 현재 진행중인 버스킹이 없습니다.</h2>
           )
         ) : (
           <h1>해당하는 유저가 존재하지않습니다.</h1>
