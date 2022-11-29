@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/BuskingApply/static/css/main.9dbf5fb2.css",
-    "main.js": "/BuskingApply/static/js/main.df58488e.js",
+    "main.css": "/BuskingApply/static/css/main.9235bffd.css",
+    "main.js": "/BuskingApply/static/js/main.5b45b16d.js",
     "index.html": "/BuskingApply/index.html",
-    "main.9dbf5fb2.css.map": "/BuskingApply/static/css/main.9dbf5fb2.css.map",
-    "main.df58488e.js.map": "/BuskingApply/static/js/main.df58488e.js.map"
+    "main.9235bffd.css.map": "/BuskingApply/static/css/main.9235bffd.css.map",
+    "main.5b45b16d.js.map": "/BuskingApply/static/js/main.5b45b16d.js.map"
   },
   "entrypoints": [
-    "static/css/main.9dbf5fb2.css",
-    "static/js/main.df58488e.js"
+    "static/css/main.9235bffd.css",
+    "static/js/main.5b45b16d.js"
   ]
 }
