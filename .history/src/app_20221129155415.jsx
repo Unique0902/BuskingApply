@@ -209,9 +209,9 @@ const App = ({
     if (playlists[id]) {
       setNowPlaylist(playlists[id]);
       if (playlists[id].songs) {
-        setResults(Object.values(playlists[id].songs));
+        setResults(playlists[id].songs);
       } else {
-        setResults([]);
+        setResults(null);
       }
     }
   };

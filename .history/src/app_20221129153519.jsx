@@ -6,9 +6,6 @@ import SearchResult from './components/searchResult/searchResult';
 import Page_num_screen from './components/page_num_screen/page_num_screen';
 import QueryString from 'qs';
 import ArrangeMenu from './components/arrangeMenu/arrangeMenu';
-import PlaylistMenu from './components/playlistMenu/playlistMenu';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 const App = ({
   buskingRepository,
@@ -35,7 +32,6 @@ const App = ({
   const [nowPlaylist, setNowPlaylist] = useState(null);
   const [isShowArrangeMenu1, setIsShowArrangeMenu1] = useState(false);
   const [isShowArrangeMenu2, setIsShowArrangeMenu2] = useState(false);
-  const [isShowPlaylistMenu, setIsShowPlaylistMenu] = useState(false);
   const [ip, setIp] = useState('');
   const location = useLocation();
   const queryData = QueryString.parse(location.search, {
@@ -45,6 +41,11 @@ const App = ({
   const searchRef = useRef();
   const selectRef = useRef();
   const valueRef = useRef();
+  const changeNowPlaylist = () => {
+    setNowPlaylist(
+      playlistsArr.find((list) => list.name === valueRef.current.value)
+    );
+  };
   const search = () => {
     if (searchRef.current.value) {
       if (selectRef.current.value === '제목') {
@@ -205,16 +206,6 @@ const App = ({
     } else {
     }
   }, [playlistData]);
-  const changeNowPlaylist = (id) => {
-    if (playlists[id]) {
-      setNowPlaylist(playlists[id]);
-      if (playlists[id].songs) {
-        setResults(Object.values(playlists[id].songs));
-      } else {
-        setResults([]);
-      }
-    }
-  };
   return (
     <section className='flex py-6 px-8  h-screen w-full text-black bg-gradient-to-b from-blue-500 to-blue-900 overflow-auto'>
       <section className='w-full'>
@@ -238,11 +229,11 @@ const App = ({
 
               <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
                 <h2 className='font-sans text-black font-semibold text-3xl'>
-                  신청가능 곡 리스트
+                  신청가능곡 리스트
                 </h2>
                 <div className='flex flex-row justify-end mb-3'>
                   <h3 className='font-sans font-normal text-xl text-gray-500'>
-                    신청가능 곡 수 {results.length}
+                    신청가능곡 수 {results.length}
                   </h3>
                 </div>
                 <section className='relative flex justify-center items-center mb-6'>
@@ -385,7 +376,7 @@ const App = ({
 
               <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
                 <h2 className='font-sans text-black font-semibold text-3xl'>
-                  신청된 곡 리스트
+                  신청된곡 리스트
                 </h2>
                 <section className='relative flex justify-end items-center mb-6'>
                   <h3 className='font-sans font-normal text-xl text-gray-500'>
@@ -513,38 +504,30 @@ const App = ({
             </section>
           ) : (
             <section>
-              <section className='border-gray-600 border-b items-center pt-3 pb-8 flex flex-row'>
-                <h2 className='font-sans text-white text-xl font-semibold w-96'>
-                  해당 유저는 버스킹 진행중이 아닙니다.
-                </h2>
-                <div className='flex relative flex-row items-center justify-end mr-4 grow'>
-                  {isShowPlaylistMenu && (
-                    <PlaylistMenu
-                      setIsShowPlaylistMenu={setIsShowPlaylistMenu}
-                      playlists={playlists}
-                      changeNowPlaylist={changeNowPlaylist}
-                      nowPlaylist={nowPlaylist}
-                    />
-                  )}
-                  <button
-                    ref={valueRef}
-                    className='text-white font-sans text-xl hover:scale-110'
-                    onClick={() => {
-                      setIsShowPlaylistMenu(true);
-                    }}
-                  >
-                    {nowPlaylist ? nowPlaylist.name : 'No Playlist..'}
-                    <FontAwesomeIcon icon={faCaretDown} className='ml-2' />
-                  </button>
+              <h2>현재 해당 유저가 진행중인 버스킹이 존재하지않습니다.</h2>
+              {playlistsArr.length != 0 ? (
+                <select
+                  ref={valueRef}
+                  className={styles.playlists}
+                  onChange={() => {
+                    changeNowPlaylist();
+                  }}
+                >
+                  {playlistsArr.map((playlist) => {
+                    return (
+                      <option data-id={playlist.id} key={playlist.id}>
+                        {playlist.name && playlist.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              ) : (
+                <div>
+                  <p>No Playlist..</p>
                 </div>
-              </section>
-
+              )}
               {!nowPlaylist && (
-                <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
-                  <h2 className='text-black font-sans font-semibold text-3xl'>
-                    해당 유저의 플레이 리스트가 존재하지 않습니다.
-                  </h2>
-                </section>
+                <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'></section>
               )}
 
               {nowPlaylist && (

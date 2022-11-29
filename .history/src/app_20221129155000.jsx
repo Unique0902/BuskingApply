@@ -208,11 +208,6 @@ const App = ({
   const changeNowPlaylist = (id) => {
     if (playlists[id]) {
       setNowPlaylist(playlists[id]);
-      if (playlists[id].songs) {
-        setResults(Object.values(playlists[id].songs));
-      } else {
-        setResults([]);
-      }
     }
   };
   return (

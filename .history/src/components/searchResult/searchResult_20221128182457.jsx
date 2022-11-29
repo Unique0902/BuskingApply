@@ -16,29 +16,21 @@ const SearchResult = ({ index, result, onSongClick, btnText }) => {
       <p className='basis-1/12'>{index}</p>
       <div
         ref={nameRef}
-        className={`${result.cnt ? 'basis-1/2' : 'basis-7/12'} relative`}
+        className='basis-7/12 relative'
         onMouseOver={() => setIsHovering1(true)}
         onMouseOut={() => setIsHovering1(false)}
       >
-        {(btnText == '제거' ||
-          btnText == '신청' ||
-          btnText == '나도신청' ||
-          btnText == '신청가능') &&
-        result.title.length > 20
+        {btnText == '제거' && result.title.length > 20
           ? result.title.slice(0, 20) + '..'
           : result.title}
         {btnText == '추가' && result.name.length > 20
           ? result.name.slice(0, 20) + '..'
           : result.name}
-        {(btnText == '제거' ||
-          btnText == '신청' ||
-          btnText == '나도신청' ||
-          btnText == '신청가능') &&
-          isHovering1 && (
-            <p className='absolute bg-white rounded-lg border border-gray-500 p-2 text-black'>
-              {result.title}
-            </p>
-          )}
+        {btnText == '제거' && isHovering1 && (
+          <p className='absolute bg-white rounded-lg border border-gray-500 p-2 text-black'>
+            {result.title}
+          </p>
+        )}
         {btnText == '추가' && isHovering1 && (
           <p className='absolute bg-white rounded-lg border border-gray-500 p-2 text-black'>
             {result.name}
@@ -67,7 +59,7 @@ const SearchResult = ({ index, result, onSongClick, btnText }) => {
             ? onSongClick(result.name, result.artist)
             : onSongClick(sid);
         }}
-        className='basis-1/12 hover:scale-110 text-white'
+        className='basis-1/12 hover:scale-110'
       >
         {btnText}
       </button>

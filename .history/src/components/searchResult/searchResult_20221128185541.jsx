@@ -20,20 +20,13 @@ const SearchResult = ({ index, result, onSongClick, btnText }) => {
         onMouseOver={() => setIsHovering1(true)}
         onMouseOut={() => setIsHovering1(false)}
       >
-        {(btnText == '제거' ||
-          btnText == '신청' ||
-          btnText == '나도신청' ||
-          btnText == '신청가능') &&
-        result.title.length > 20
+        {btnText == '제거' && result.title.length > 20
           ? result.title.slice(0, 20) + '..'
           : result.title}
         {btnText == '추가' && result.name.length > 20
           ? result.name.slice(0, 20) + '..'
           : result.name}
-        {(btnText == '제거' ||
-          btnText == '신청' ||
-          btnText == '나도신청' ||
-          btnText == '신청가능') &&
+        {(btnText == '제거' || btnText == '신청' || btnText == '나도신청') &&
           isHovering1 && (
             <p className='absolute bg-white rounded-lg border border-gray-500 p-2 text-black'>
               {result.title}

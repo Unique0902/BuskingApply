@@ -6,9 +6,6 @@ import SearchResult from './components/searchResult/searchResult';
 import Page_num_screen from './components/page_num_screen/page_num_screen';
 import QueryString from 'qs';
 import ArrangeMenu from './components/arrangeMenu/arrangeMenu';
-import PlaylistMenu from './components/playlistMenu/playlistMenu';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 const App = ({
   buskingRepository,
@@ -35,7 +32,6 @@ const App = ({
   const [nowPlaylist, setNowPlaylist] = useState(null);
   const [isShowArrangeMenu1, setIsShowArrangeMenu1] = useState(false);
   const [isShowArrangeMenu2, setIsShowArrangeMenu2] = useState(false);
-  const [isShowPlaylistMenu, setIsShowPlaylistMenu] = useState(false);
   const [ip, setIp] = useState('');
   const location = useLocation();
   const queryData = QueryString.parse(location.search, {
@@ -45,6 +41,11 @@ const App = ({
   const searchRef = useRef();
   const selectRef = useRef();
   const valueRef = useRef();
+  const changeNowPlaylist = () => {
+    setNowPlaylist(
+      playlistsArr.find((list) => list.name === valueRef.current.value)
+    );
+  };
   const search = () => {
     if (searchRef.current.value) {
       if (selectRef.current.value === '제목') {
@@ -205,46 +206,22 @@ const App = ({
     } else {
     }
   }, [playlistData]);
-  const changeNowPlaylist = (id) => {
-    if (playlists[id]) {
-      setNowPlaylist(playlists[id]);
-      if (playlists[id].songs) {
-        setResults(Object.values(playlists[id].songs));
-      } else {
-        setResults([]);
-      }
-    }
-  };
   return (
-    <section className='flex py-6 px-8  h-screen w-full text-black bg-gradient-to-b from-blue-500 to-blue-900 overflow-auto'>
+    <section className='flex h-screen w-full text-black bg-gradient-to-b from-blue-500 to-blue-900 overflow-auto'>
       <section className='w-full'>
         {isUser ? (
           isBusking ? (
-            <section className='text-black'>
-              <section className='border-gray-600 border-b items-center pt-3 pb-8 flex flex-row'>
+            <section>
+              <section className='border-gray-600 border-b items-center pt-2 pb-5 flex flex-row'>
                 <h1 className='font-sans text-white text-3xl font-semibold w-96'>
-                  {buskingData && buskingData.name}
+                  {playlistData && playlistData.name}
                 </h1>
-                <div className='flex flex-row items-center justify-end mr-4 grow'>
-                  <h2 className='font-sans text-white text-2xl font-semibold'>
-                    {!!name && `이름: ${name}`}
-                  </h2>
-                  <h2 className='font-sans text-white text-2xl font-semibold ml-8'>
-                    {!!playlistData &&
-                      `선택된 플레이리스트: ${playlistData.name}`}
-                  </h2>
-                </div>
               </section>
-
               <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
-                <h2 className='font-sans text-black font-semibold text-3xl'>
-                  신청가능 곡 리스트
-                </h2>
-                <div className='flex flex-row justify-end mb-3'>
-                  <h3 className='font-sans font-normal text-xl text-gray-500'>
-                    신청가능 곡 수 {results.length}
-                  </h3>
-                </div>
+                <h2 className='font-sans text-black'>신청가능곡 리스트</h2>
+                <h3 className='font-sans text-black'>
+                  신청가능곡 수 {results.length}
+                </h3>
                 <section className='relative flex justify-center items-center mb-6'>
                   <select
                     ref={selectRef}
@@ -288,11 +265,11 @@ const App = ({
                 </section>
                 <section className='w-full'>
                   <ul>
-                    <li className='flex flex-row justify-between  text-center px-2 py-1'>
-                      <div className=' basis-1/12 text-black'>index</div>
-                      <div className='basis-7/12 text-black'>이름</div>
-                      <div className='basis-1/4 text-black'>아티스트</div>
-                      <div className='basis-1/12 text-black'></div>
+                    <li className='flex flex-row justify-between text-center px-2 py-1'>
+                      <div className=' basis-1/12'>index</div>
+                      <div className='basis-7/12 '>이름</div>
+                      <div className='basis-1/4 '>아티스트</div>
+                      <div className='basis-1/12'></div>
                     </li>
                     {results &&
                       results
@@ -384,13 +361,32 @@ const App = ({
               </section>
 
               <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
-                <h2 className='font-sans text-black font-semibold text-3xl'>
-                  신청된 곡 리스트
-                </h2>
-                <section className='relative flex justify-end items-center mb-6'>
-                  <h3 className='font-sans font-normal text-xl text-gray-500'>
-                    신청된 곡 수 {appliance.length}
-                  </h3>
+                <h2 className='font-sans text-black'>신청된곡 리스트</h2>
+                <h3 className='font-sans text-black'>
+                  신청된 곡 수 {appliance.length}
+                </h3>
+                <section className='relative flex justify-center items-center mb-6'>
+                  <select
+                    ref={selectRef}
+                    className=' border-black border-2 rounded-xl p-2 font-sans text-lg mr-4'
+                    onChange={() => {
+                      setPageNum(1);
+                      search();
+                    }}
+                  >
+                    <option value='제목'>제목</option>
+                    <option value='가수'>가수</option>
+                  </select>
+                  <input
+                    type='search'
+                    className='border-black border-2 p-2 rounded-xl w-2/5 font-sans text-lg'
+                    placeholder='검색어를 입력하세요..'
+                    ref={searchRef}
+                    onChange={() => {
+                      setPageNum(1);
+                      search();
+                    }}
+                  />
                   <div className='relative'>
                     <button
                       className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
@@ -413,11 +409,10 @@ const App = ({
                 <section className='w-full'>
                   <ul>
                     <li className='flex flex-row justify-between text-center px-2 py-1'>
-                      <div className=' basis-1/12 text-black'>index</div>
-                      <div className='basis-1/2 text-black'>이름</div>
-                      <div className='basis-1/4 text-black'>아티스트</div>
-                      <div className='basis-1/12 text-black'>신청자수</div>
-                      <div className='basis-1/12 text-black'></div>
+                      <div className=' basis-1/12'>index</div>
+                      <div className='basis-7/12 '>이름</div>
+                      <div className='basis-1/4 '>아티스트</div>
+                      <div className='basis-1/12'></div>
                     </li>
                     {appliance &&
                       appliance
@@ -513,121 +508,114 @@ const App = ({
             </section>
           ) : (
             <section>
-              <section className='border-gray-600 border-b items-center pt-3 pb-8 flex flex-row'>
-                <h2 className='font-sans text-white text-xl font-semibold w-96'>
-                  해당 유저는 버스킹 진행중이 아닙니다.
-                </h2>
-                <div className='flex relative flex-row items-center justify-end mr-4 grow'>
-                  {isShowPlaylistMenu && (
-                    <PlaylistMenu
-                      setIsShowPlaylistMenu={setIsShowPlaylistMenu}
-                      playlists={playlists}
-                      changeNowPlaylist={changeNowPlaylist}
-                      nowPlaylist={nowPlaylist}
-                    />
-                  )}
-                  <button
+              <h2>해당 유저의 현재 진행중인 버스킹이 없습니다.</h2>
+              <section>
+                <p>{playlistData && playlistData.name}</p>
+                {playlistsArr.length != 0 ? (
+                  <select
                     ref={valueRef}
-                    className='text-white font-sans text-xl hover:scale-110'
-                    onClick={() => {
-                      setIsShowPlaylistMenu(true);
+                    className={styles.playlists}
+                    onChange={() => {
+                      changeNowPlaylist();
                     }}
                   >
-                    {nowPlaylist ? nowPlaylist.name : 'No Playlist..'}
-                    <FontAwesomeIcon icon={faCaretDown} className='ml-2' />
-                  </button>
-                </div>
-              </section>
-
-              {!nowPlaylist && (
-                <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
-                  <h2 className='text-black font-sans font-semibold text-3xl'>
-                    해당 유저의 플레이 리스트가 존재하지 않습니다.
-                  </h2>
-                </section>
-              )}
-
-              {nowPlaylist && (
-                <section className='bg-white rounded-2xl m-auto w-3/4 mt-8 p-10 relative'>
-                  <h2 className='font-sans text-black font-semibold text-3xl'>
-                    {nowPlaylist && nowPlaylist.name}
-                  </h2>
-                  <div className='flex flex-row justify-end mb-3'>
-                    <h3 className='font-sans font-normal text-xl text-gray-500'>
-                      곡 수 {results.length}
-                    </h3>
+                    {playlistsArr.map((playlist) => {
+                      return (
+                        <option data-id={playlist.id} key={playlist.id}>
+                          {playlist.name && playlist.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                ) : (
+                  <div>
+                    <p>No Playlist..</p>
                   </div>
-                  <section className='relative flex justify-center items-center mb-6'>
-                    <select
-                      ref={selectRef}
-                      className=' border-black border-2 rounded-xl p-2 font-sans text-lg mr-4'
-                      onChange={() => {
-                        setPageNum(1);
-                        search();
-                      }}
-                    >
-                      <option value='제목'>제목</option>
-                      <option value='가수'>가수</option>
-                    </select>
-                    <input
-                      type='search'
-                      className='border-black border-2 p-2 rounded-xl w-2/5 font-sans text-lg'
-                      placeholder='검색어를 입력하세요..'
-                      ref={searchRef}
-                      onChange={() => {
-                        setPageNum(1);
-                        search();
-                      }}
-                    />
-                    <div className='relative'>
-                      <button
-                        className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
-                        onClick={() => {
-                          setIsShowArrangeMenu1(true);
-                        }}
-                      >
-                        정렬
-                      </button>
-                      {isShowArrangeMenu1 && (
-                        <ArrangeMenu
-                          setIsShowArrangeMenu={setIsShowArrangeMenu1}
-                          results={results}
-                          setResults={setResults}
-                          isBusking={false}
-                        />
-                      )}
-                    </div>
-                  </section>
-                  <section className='w-full'>
-                    <ul>
-                      <li className='flex flex-row justify-between  text-center px-2 py-1'>
-                        <div className=' basis-1/12 text-black'>index</div>
-                        <div className='basis-7/12 text-black'>이름</div>
-                        <div className='basis-1/4 text-black'>아티스트</div>
-                        <div className='basis-1/12 text-black'></div>
-                      </li>
-                      {results &&
-                        results
-                          .slice((pageNum - 1) * 6, pageNum * 6)
-                          .map((result) => (
-                            <SearchResult
-                              key={results.indexOf(result)}
-                              index={results.indexOf(result) + 1}
-                              result={result}
-                              btnText='신청가능'
-                              onSongClick={() => {}}
-                            />
-                          ))}
-                    </ul>
-                    <Page_num_screen
-                      resultNum={resultNum}
-                      pageNum={pageNum}
-                      onPagePlus={plusPage}
-                      onPageMinus={minusPage}
-                    />
-                  </section>
+                )}
+                <section className={styles.searchBar}>
+                  <select
+                    ref={selectRef}
+                    onChange={() => {
+                      setPageNum(1);
+                      search();
+                    }}
+                  >
+                    <option value='제목'>제목</option>
+                    <option value='가수'>가수</option>
+                  </select>
+                  <input
+                    type='search'
+                    placeholder='search..'
+                    ref={searchRef}
+                    onChange={() => {
+                      setPageNum(1);
+                      search();
+                    }}
+                  />
                 </section>
-              )}
+                <section className={styles.results}>
+                  <h2>해당 유저의 플레이 리스트</h2>
+                  <h3>플레이리스트의 곡 수 {results.length}</h3>
+                  <ul>
+                    <li className={styles.description}>
+                      <div className={styles.index}>index</div>
+                      <div className={styles.name}>이름</div>
+                      <div className={styles.artist}>아티스트</div>
+                      <div className={styles.btn}></div>
+                    </li>
+                    {results &&
+                      results
+                        .slice((pageNum - 1) * 6, pageNum * 6)
+                        .map((result) => (
+                          <SearchResult
+                            key={results.indexOf(result)}
+                            index={results.indexOf(result) + 1}
+                            result={result}
+                            btnText={'신청가능'}
+                            onSongClick={() => {}}
+                          />
+                        ))}
+                  </ul>
+                  <Page_num_screen
+                    resultNum={resultNum}
+                    pageNum={pageNum}
+                    onPagePlus={plusPage}
+                    onPageMinus={minusPage}
+                  />
+                  <button
+                    className={styles.btn}
+                    onClick={() => {
+                      results.sort(function (a, b) {
+                        if (a.title.toLowerCase() > b.title.toLowerCase())
+                          return 1;
+                        else if (a.title.toLowerCase() < b.title.toLowerCase())
+                          return -1;
+                        else return 0;
+                      });
+                      setResults([...results]);
+                    }}
+                  >
+                    제목 문자순 정렬
+                  </button>
+                  <button
+                    className={styles.btn}
+                    onClick={() => {
+                      results.sort(function (a, b) {
+                        if (a.artist.toLowerCase() > b.artist.toLowerCase())
+                          return 1;
+                        else if (
+                          a.artist.toLowerCase() < b.artist.toLowerCase()
+                        )
+                          return -1;
+                        else return 0;
+                      });
+                      setResults([...results]);
+                    }}
+                  >
+                    가수 문자순 정렬
+                  </button>
+                </section>
+              </section>
             </section>
           )
         ) : (

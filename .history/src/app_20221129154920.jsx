@@ -208,11 +208,6 @@ const App = ({
   const changeNowPlaylist = (id) => {
     if (playlists[id]) {
       setNowPlaylist(playlists[id]);
-      if (playlists[id].songs) {
-        setResults(Object.values(playlists[id].songs));
-      } else {
-        setResults([]);
-      }
     }
   };
   return (
@@ -517,7 +512,7 @@ const App = ({
                 <h2 className='font-sans text-white text-xl font-semibold w-96'>
                   해당 유저는 버스킹 진행중이 아닙니다.
                 </h2>
-                <div className='flex relative flex-row items-center justify-end mr-4 grow'>
+                <div className='flex flex-row items-center justify-end mr-4 grow'>
                   {isShowPlaylistMenu && (
                     <PlaylistMenu
                       setIsShowPlaylistMenu={setIsShowPlaylistMenu}
@@ -536,6 +531,27 @@ const App = ({
                     {nowPlaylist ? nowPlaylist.name : 'No Playlist..'}
                     <FontAwesomeIcon icon={faCaretDown} className='ml-2' />
                   </button>
+                  {playlistsArr.length != 0 ? (
+                    <select
+                      ref={valueRef}
+                      className={styles.playlists}
+                      onChange={() => {
+                        changeNowPlaylist();
+                      }}
+                    >
+                      {playlistsArr.map((playlist) => {
+                        return (
+                          <option data-id={playlist.id} key={playlist.id}>
+                            {playlist.name && playlist.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : (
+                    <div>
+                      <p>No Playlist..</p>
+                    </div>
+                  )}
                 </div>
               </section>
 

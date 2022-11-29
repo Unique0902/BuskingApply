@@ -13,12 +13,8 @@ const Page_num_screen = ({ resultNum, pageNum, onPagePlus, onPageMinus }) => {
       <button className={btnStyle} onClick={() => onPageMinus()}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </button>
-      <p className='ml-2 text-black font-sans font-normal text-xl'>
-        {pageNum}/
-      </p>
-      <p className='mr-2 text-black font-sans font-normal text-xl'>
-        {parseInt((resultNum - 1) / 6) + 1}
-      </p>
+      <p className='ml-2 text-black'>{pageNum}/</p>
+      <p className='mr-2 text-black'>{parseInt((resultNum - 1) / 6) + 1}</p>
       <button className={btnStyle} onClick={() => onPagePlus()}>
         <FontAwesomeIcon icon={faChevronRight} />
       </button>

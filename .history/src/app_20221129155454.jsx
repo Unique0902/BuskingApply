@@ -211,7 +211,7 @@ const App = ({
       if (playlists[id].songs) {
         setResults(Object.values(playlists[id].songs));
       } else {
-        setResults([]);
+        setResults(null);
       }
     }
   };
