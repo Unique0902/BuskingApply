@@ -361,7 +361,7 @@ const App = ({
               </MainSec>
 
               <MainSec>
-                <h2 className='font-sans max-lg:text-center text-black font-semibold text-3xl'>
+                <h2 className='font-sans text-black font-semibold text-3xl'>
                   신청된 곡 리스트
                 </h2>
                 <section className='relative flex justify-end items-center mb-6'>

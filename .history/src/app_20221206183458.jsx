@@ -265,7 +265,7 @@ const App = ({
                   onSearchBarChange={onSearchBarChange}
                 >
                   <button
-                    className='ml-5 bg-blue-600 max-lg:ml-2 max-lg:px-2 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
+                    className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
                     onClick={(e) => {
                       e.preventDefault();
                       setIsShowArrangeMenu1(true);
@@ -361,7 +361,7 @@ const App = ({
               </MainSec>
 
               <MainSec>
-                <h2 className='font-sans max-lg:text-center text-black font-semibold text-3xl'>
+                <h2 className='font-sans text-black font-semibold text-3xl'>
                   신청된 곡 리스트
                 </h2>
                 <section className='relative flex justify-end items-center mb-6'>
@@ -370,7 +370,7 @@ const App = ({
                   </h3>
                   <div className='relative'>
                     <button
-                      className='ml-5 bg-blue-600 py-2 px-3 max-lg:ml-2 max-lg:px-2 text-lg rounded-lg text-white hover:scale-125'
+                      className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
                       onClick={() => {
                         setIsShowArrangeMenu2(true);
                       }}
@@ -502,7 +502,7 @@ const App = ({
 
               {nowPlaylist && (
                 <MainSec>
-                  <h2 className='font-sans text-black font-semibold text-3xl max-lg:text-center'>
+                  <h2 className='font-sans text-black font-semibold text-3xl'>
                     {nowPlaylist && nowPlaylist.name}
                   </h2>
                   <div className='flex flex-row justify-end mb-3'>
@@ -518,7 +518,7 @@ const App = ({
                     onSearchBarChange={onSearchBarChange}
                   >
                     <button
-                      className='ml-5 bg-blue-600 max-lg:ml-2 max-lg:px-2 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
+                      className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
                       onClick={(e) => {
                         e.preventDefault();
                         setIsShowArrangeMenu1(true);

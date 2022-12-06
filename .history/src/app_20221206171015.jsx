@@ -265,7 +265,7 @@ const App = ({
                   onSearchBarChange={onSearchBarChange}
                 >
                   <button
-                    className='ml-5 bg-blue-600 max-lg:ml-2 max-lg:px-2 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
+                    className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
                     onClick={(e) => {
                       e.preventDefault();
                       setIsShowArrangeMenu1(true);
@@ -361,7 +361,7 @@ const App = ({
               </MainSec>
 
               <MainSec>
-                <h2 className='font-sans max-lg:text-center text-black font-semibold text-3xl'>
+                <h2 className='font-sans text-black font-semibold text-3xl'>
                   신청된 곡 리스트
                 </h2>
                 <section className='relative flex justify-end items-center mb-6'>
@@ -370,7 +370,7 @@ const App = ({
                   </h3>
                   <div className='relative'>
                     <button
-                      className='ml-5 bg-blue-600 py-2 px-3 max-lg:ml-2 max-lg:px-2 text-lg rounded-lg text-white hover:scale-125'
+                      className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
                       onClick={() => {
                         setIsShowArrangeMenu2(true);
                       }}
@@ -502,7 +502,7 @@ const App = ({
 
               {nowPlaylist && (
                 <MainSec>
-                  <h2 className='font-sans text-black font-semibold text-3xl max-lg:text-center'>
+                  <h2 className='font-sans text-black font-semibold text-3xl'>
                     {nowPlaylist && nowPlaylist.name}
                   </h2>
                   <div className='flex flex-row justify-end mb-3'>
@@ -510,31 +510,47 @@ const App = ({
                       곡 수 {results.length}
                     </h3>
                   </div>
-                  <SongSearchBar
-                    searchWord={searchWord}
-                    setSearchWord={setSearchWord}
-                    searchCategory={searchCategory}
-                    setSearchCategory={setSearchCategory}
-                    onSearchBarChange={onSearchBarChange}
-                  >
-                    <button
-                      className='ml-5 bg-blue-600 max-lg:ml-2 max-lg:px-2 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsShowArrangeMenu1(true);
+                  <section className='relative flex justify-center items-center mb-6'>
+                    <select
+                      ref={selectRef}
+                      className=' border-black border-2 rounded-xl p-2 font-sans text-lg mr-4'
+                      onChange={() => {
+                        setPageNum(1);
+                        search();
                       }}
                     >
-                      정렬
-                    </button>
-                    {isShowArrangeMenu1 && (
-                      <ArrangeMenu
-                        setIsShowArrangeMenu={setIsShowArrangeMenu1}
-                        results={results}
-                        setResults={setResults}
-                        isBusking={false}
-                      />
-                    )}
-                  </SongSearchBar>
+                      <option value='제목'>제목</option>
+                      <option value='가수'>가수</option>
+                    </select>
+                    <input
+                      type='search'
+                      className='border-black border-2 p-2 rounded-xl w-2/5 font-sans text-lg'
+                      placeholder='검색어를 입력하세요..'
+                      ref={searchRef}
+                      onChange={() => {
+                        setPageNum(1);
+                        search();
+                      }}
+                    />
+                    <div className='relative'>
+                      <button
+                        className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
+                        onClick={() => {
+                          setIsShowArrangeMenu1(true);
+                        }}
+                      >
+                        정렬
+                      </button>
+                      {isShowArrangeMenu1 && (
+                        <ArrangeMenu
+                          setIsShowArrangeMenu={setIsShowArrangeMenu1}
+                          results={results}
+                          setResults={setResults}
+                          isBusking={false}
+                        />
+                      )}
+                    </div>
+                  </section>
                   <section className='w-full'>
                     <ul>
                       {isPc && <SongTableTitles isApply={false} />}
@@ -558,11 +574,7 @@ const App = ({
             </section>
           )
         ) : (
-          <MainSec>
-            <h1 className='text-black font-sans text-xl font-semibold'>
-              해당하는 유저가 존재하지않습니다.
-            </h1>
-          </MainSec>
+          <h1>해당하는 유저가 존재하지않습니다.</h1>
         )}
       </section>
     </section>

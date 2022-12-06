@@ -12,8 +12,6 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import MainSec from './components/mainSec/mainSec';
 import SongTableTitles from './components/songTableTitles/songTableTitles';
 import SearchResults from './components/searchResults/searchResults';
-import { useMediaQuery } from 'react-responsive';
-import SongSearchBar from './components/songSearchBar/songSearchBar';
 
 const App = ({
   buskingRepository,
@@ -42,8 +40,6 @@ const App = ({
   const [isShowArrangeMenu2, setIsShowArrangeMenu2] = useState(false);
   const [isShowPlaylistMenu, setIsShowPlaylistMenu] = useState(false);
   const [ip, setIp] = useState('');
-  const [searchWord, setSearchWord] = useState('');
-  const [searchCategory, setSearchCategory] = useState('제목');
   const location = useLocation();
   const queryData = QueryString.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -52,30 +48,25 @@ const App = ({
   const searchRef = useRef();
   const selectRef = useRef();
   const valueRef = useRef();
-  const isPc = useMediaQuery({
-    query: '(min-width:1024px)',
-  });
   const search = () => {
-    if (nowPlaylist && nowPlaylist.songs) {
-      if (searchWord) {
-        if (searchCategory === '제목') {
-          setResults(
-            Object.values(nowPlaylist.songs).filter((song) =>
-              song.title.toLowerCase().includes(searchWord)
-            )
-          );
-          setResultNum(results.length);
-        } else if (searchCategory === '가수') {
-          setResults(
-            Object.values(nowPlaylist.songs).filter((song) =>
-              song.artist.toLowerCase().includes(searchWord)
-            )
-          );
-          setResultNum(results.length);
-        }
-      } else {
-        setResults(Object.values(nowPlaylist.songs));
+    if (searchRef.current.value) {
+      if (selectRef.current.value === '제목') {
+        setResults(
+          Object.values(playlistData.songs).filter((song) =>
+            song.title.toLowerCase().includes(searchRef.current.value)
+          )
+        );
+        setResultNum(results.length);
+      } else if (selectRef.current.value === '가수') {
+        setResults(
+          Object.values(playlistData.songs).filter((song) =>
+            song.artist.toLowerCase().includes(searchRef.current.value)
+          )
+        );
+        setResultNum(results.length);
       }
+    } else {
+      setResults(Object.values(playlistData.songs));
     }
   };
   const plusPage = () => {
@@ -200,10 +191,7 @@ const App = ({
       });
     }
   }, [isBusking]);
-  const onSearchBarChange = () => {
-    setPageNum(1);
-    search();
-  };
+
   useEffect(() => {
     if (buskingData) {
       playlistRepository.syncPlaylist(userId, (data) => {
@@ -252,39 +240,55 @@ const App = ({
                 <h2 className='font-sans text-black font-semibold text-3xl'>
                   신청가능 곡 리스트
                 </h2>
-                <div className='flex flex-row justify-end max-lg:justify-center mb-3'>
-                  <h3 className='font-sans font-normal  text-xl text-gray-500'>
+                <div className='flex flex-row justify-end mb-3'>
+                  <h3 className='font-sans font-normal text-xl text-gray-500'>
                     신청가능 곡 수 {results.length}
                   </h3>
                 </div>
-                <SongSearchBar
-                  searchWord={searchWord}
-                  setSearchWord={setSearchWord}
-                  searchCategory={searchCategory}
-                  setSearchCategory={setSearchCategory}
-                  onSearchBarChange={onSearchBarChange}
-                >
-                  <button
-                    className='ml-5 bg-blue-600 max-lg:ml-2 max-lg:px-2 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsShowArrangeMenu1(true);
+                <section className='relative flex justify-center items-center mb-6'>
+                  <select
+                    ref={selectRef}
+                    className=' border-black border-2 rounded-xl p-2 font-sans max-lg:w-full max-lg:mr-0 max-lg:mb-2 max-lg:text-base text-lg mr-4'
+                    onChange={() => {
+                      setPageNum(1);
+                      search();
                     }}
                   >
-                    정렬
-                  </button>
-                  {isShowArrangeMenu1 && (
-                    <ArrangeMenu
-                      setIsShowArrangeMenu={setIsShowArrangeMenu1}
-                      results={results}
-                      setResults={setResults}
-                      isBusking={false}
-                    />
-                  )}
-                </SongSearchBar>
+                    <option value='제목'>제목</option>
+                    <option value='가수'>가수</option>
+                  </select>
+                  <input
+                    type='search'
+                    className='border-black border-2 p-2 rounded-xl w-2/5 font-sans text-lg'
+                    placeholder='검색어를 입력하세요..'
+                    ref={searchRef}
+                    onChange={() => {
+                      setPageNum(1);
+                      search();
+                    }}
+                  />
+                  <div className='relative'>
+                    <button
+                      className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
+                      onClick={() => {
+                        setIsShowArrangeMenu1(true);
+                      }}
+                    >
+                      정렬
+                    </button>
+                    {isShowArrangeMenu1 && (
+                      <ArrangeMenu
+                        setIsShowArrangeMenu={setIsShowArrangeMenu1}
+                        results={results}
+                        setResults={setResults}
+                        isBusking={false}
+                      />
+                    )}
+                  </div>
+                </section>
                 <section className='w-full'>
                   <ul>
-                    {isPc && <SongTableTitles isApply={false} />}
+                    <SongTableTitles isApply={false} />
                     <SearchResults
                       isSearch={false}
                       results={results}
@@ -319,7 +323,6 @@ const App = ({
                               );
                               return;
                             }
-                            const song = results.find((s) => s.id == sid);
                             buskingRepository.applyNewBuskingSong(
                               userId,
                               song.title,
@@ -361,7 +364,7 @@ const App = ({
               </MainSec>
 
               <MainSec>
-                <h2 className='font-sans max-lg:text-center text-black font-semibold text-3xl'>
+                <h2 className='font-sans text-black font-semibold text-3xl'>
                   신청된 곡 리스트
                 </h2>
                 <section className='relative flex justify-end items-center mb-6'>
@@ -370,7 +373,7 @@ const App = ({
                   </h3>
                   <div className='relative'>
                     <button
-                      className='ml-5 bg-blue-600 py-2 px-3 max-lg:ml-2 max-lg:px-2 text-lg rounded-lg text-white hover:scale-125'
+                      className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
                       onClick={() => {
                         setIsShowArrangeMenu2(true);
                       }}
@@ -389,7 +392,7 @@ const App = ({
                 </section>
                 <section className='w-full'>
                   <ul>
-                    {isPc && <SongTableTitles isApply={true} />}
+                    <SongTableTitles isApply={true} />
                     <SearchResults
                       isSearch={false}
                       results={appliance}
@@ -502,7 +505,7 @@ const App = ({
 
               {nowPlaylist && (
                 <MainSec>
-                  <h2 className='font-sans text-black font-semibold text-3xl max-lg:text-center'>
+                  <h2 className='font-sans text-black font-semibold text-3xl'>
                     {nowPlaylist && nowPlaylist.name}
                   </h2>
                   <div className='flex flex-row justify-end mb-3'>
@@ -510,41 +513,62 @@ const App = ({
                       곡 수 {results.length}
                     </h3>
                   </div>
-                  <SongSearchBar
-                    searchWord={searchWord}
-                    setSearchWord={setSearchWord}
-                    searchCategory={searchCategory}
-                    setSearchCategory={setSearchCategory}
-                    onSearchBarChange={onSearchBarChange}
-                  >
-                    <button
-                      className='ml-5 bg-blue-600 max-lg:ml-2 max-lg:px-2 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsShowArrangeMenu1(true);
+                  <section className='relative flex justify-center items-center mb-6'>
+                    <select
+                      ref={selectRef}
+                      className=' border-black border-2 rounded-xl p-2 font-sans text-lg mr-4'
+                      onChange={() => {
+                        setPageNum(1);
+                        search();
                       }}
                     >
-                      정렬
-                    </button>
-                    {isShowArrangeMenu1 && (
-                      <ArrangeMenu
-                        setIsShowArrangeMenu={setIsShowArrangeMenu1}
-                        results={results}
-                        setResults={setResults}
-                        isBusking={false}
-                      />
-                    )}
-                  </SongSearchBar>
+                      <option value='제목'>제목</option>
+                      <option value='가수'>가수</option>
+                    </select>
+                    <input
+                      type='search'
+                      className='border-black border-2 p-2 rounded-xl w-2/5 font-sans text-lg'
+                      placeholder='검색어를 입력하세요..'
+                      ref={searchRef}
+                      onChange={() => {
+                        setPageNum(1);
+                        search();
+                      }}
+                    />
+                    <div className='relative'>
+                      <button
+                        className='ml-5 bg-blue-600 py-2 px-3 text-lg rounded-lg text-white hover:scale-125'
+                        onClick={() => {
+                          setIsShowArrangeMenu1(true);
+                        }}
+                      >
+                        정렬
+                      </button>
+                      {isShowArrangeMenu1 && (
+                        <ArrangeMenu
+                          setIsShowArrangeMenu={setIsShowArrangeMenu1}
+                          results={results}
+                          setResults={setResults}
+                          isBusking={false}
+                        />
+                      )}
+                    </div>
+                  </section>
                   <section className='w-full'>
                     <ul>
-                      {isPc && <SongTableTitles isApply={false} />}
-                      <SearchResults
-                        isSearch={false}
-                        results={results}
-                        pageNum={pageNum}
-                        btnText={'신청가능'}
-                        onSongClick={() => {}}
-                      />
+                      <SongTableTitles isApply={false} />
+                      {results &&
+                        results
+                          .slice((pageNum - 1) * 6, pageNum * 6)
+                          .map((result) => (
+                            <SearchResult
+                              key={results.indexOf(result)}
+                              index={results.indexOf(result) + 1}
+                              result={result}
+                              btnText='신청가능'
+                              onSongClick={() => {}}
+                            />
+                          ))}
                     </ul>
                     <Page_num_screen
                       resultNum={resultNum}
@@ -558,11 +582,7 @@ const App = ({
             </section>
           )
         ) : (
-          <MainSec>
-            <h1 className='text-black font-sans text-xl font-semibold'>
-              해당하는 유저가 존재하지않습니다.
-            </h1>
-          </MainSec>
+          <h1>해당하는 유저가 존재하지않습니다.</h1>
         )}
       </section>
     </section>
